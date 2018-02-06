@@ -13,7 +13,7 @@ class CroomMessage:
         return json.dumps({"msgid":self.msgid, "payload":self.payload}, sort_keys=True)
 
     def decapsulate(self, str):
-        json_parsed = json.load(str)
+        json_parsed = json.loads(str)
         self.msgid = json_parsed["msgid"]
         self.payload = json_parsed["payload"]
 
