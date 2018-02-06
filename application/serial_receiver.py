@@ -11,6 +11,9 @@ class SerialReceiver:
     def send(self, message):
         self.ser.write(message.encapsulate)
 
+    def send_string(self, message):
+        self.ser.write(message)
+
     def run(self):
         while not self.stop_event:
             buffer = self.ser.readline()
