@@ -15,7 +15,6 @@ class Client:
         self.listener.start()
         self.writer = None
         self.server_name = ""
-        self.led.led_off()
         self.state = 0
         self.serial = SerialReceiver(self.on_control,9600,"/dev/ttyACM0")
 
