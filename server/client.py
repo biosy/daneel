@@ -15,44 +15,35 @@ class Client:
         self.writer = None
         self.server_name = ""
         self.board = DeviceManager()
-        #button = Button("test",)
-        #self.board.add_button()
         self.led = Led(7)
         self.led.led_off()
         self.state = 0
         self.led_state = Led(11)
         self.led_state.led_off()
     def on_message(self, message):
+        # Start to interpret as a generic message
         primal_message = CroomMessage("","")
         primal_message.decapsulate(message.decode("utf-8"))
-        print(primal_message.msgid+"\n")
+
+        # Case : data message
         if primal_message.msgid == "04":
-            print("ok")
             secondal_message = Data("")
             secondal_message.decapsulate(message.decode("utf-8"))
             self.server_name = secondal_message.data
-            #self.writer = SocketWriter(self.server_name,5000)
-            print("ok\n")
-            self.led_state.led_on()
-            time.sleep(0.1)
-            self.led_state.led_off()
-            time.sleep(0.1)
-            self.led_state.led_on()
-            time.sleep(0.1)
-            self.led_state.led_off()
-            time.sleep(0.1)
-            self.led_state.led_on()
 
+        # Case : data exchange
         if primal_message.msgid == "03":
-            print("you\n")
             secondal_message = DataChange("","")
             secondal_message.decapsulate(message.decode("utf-8"))
 
+            # case led
             if(secondal_message.deviceName == "led"):
+                # case led on
                 if secondal_message.value == "01":
                     self.led.led_on()      
                     print("again")
 
+                # case led off
                 if secondal_message.value =="02":
                     self.led.led_off()
 

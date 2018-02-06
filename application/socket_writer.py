@@ -7,11 +7,15 @@ class SocketWriter:
         self.addr = addrs
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    def connect(self):
+        print(self.addr + str(self.port))
         self.socket.connect((self.addr,self.port))
+        print("connected")
 
     def send(self, message):
-        self.socket.send(message.encapsulate().encode("utf-8"))
+        self.socket.sendall(message.encapsulate().encode("utf-8"))
+        print(message.encapsulate().encode("utf-8"))
 
 
 def on_message(message):

@@ -12,6 +12,7 @@ class Board:
     def __init__(self):
         self.serial = None
         self.socketListener = None
+        self.socketWriter = SocketWriter("",0)
         self.wifi_connected = False
 
     def connect_to_serial(self, addr, baudrate):
@@ -31,18 +32,18 @@ class Board:
 
     def connect_to_wifi(self, addr, port):
         if self.wifi_connected == False:
-            try:
-                data = Data("192.168.0.11:5000")
-                self.socketWriter = SocketWriter(addr,port)
-                self.wifi_connected = True
-                self.socketListener = SocketListener(5000,self.on_message)
-                self.socketListener.start()
-                self.socketWriter.send(data.encapsulate())
 
-            except:
-                self.wifi_connected = False
+            data = Data("192.168.0.11")
+            self.socketWriter = SocketWriter(addr,port)
+            self.socketWriter.connect()
+            self.wifi_connected = True
+            #self.socketListener = SocketListener(5000,self.on_message)
+            #self.socketListener.start()
+            self.socketWriter.send(data)
+
+
 
         else :
             # disconnection
             self.wifi_connected = False
-            self.socketListener.close()
+            #self.socketListener.close()

@@ -6,8 +6,8 @@ class SocketListener(threading.Thread):
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(("127.0.0.1", self.port))
-        self.socket.listen(1)
+        self.socket.bind(("", self.port))
+        self.socket.listen(5)
         self.stop_event = False
         self.on_message = on_message
         threading.Thread.__init__(self)  # ne pas oublier cette ligne

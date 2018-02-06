@@ -4,11 +4,37 @@ from tkinter import *
 from tkinter import ttk
 from application.board import *
 from tkinter import tix
+import tkinter as tk
 
+class SeaofBTCapp(tix.Tk):
 
-class Window:
-    def __init__(self):
-        self.window = tix.Tk()
+    def __init__(self, *args, **kwargs):
+        tix.Tk.__init__(self, *args, **kwargs)
+        container = tk.Frame(self)
+
+        container.pack(side="top", fill="both", expand=True)
+
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+
+        for F in (Window, TemperatureFrame):
+            frame = F(container, self)
+
+            self.frames[F] = frame
+
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame(Window)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+class Window(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self,parent)
 
         self.window["bg"]="white"
 
@@ -110,7 +136,7 @@ class Window:
         self.num = 1
         self.canvas[1].bind('<Enter>', lambda event, arg=1: self.enter(event, arg))
         self.canvas[1].bind('<Leave>', lambda event, arg=1: self.leave(event, arg))
-
+        self.canvas[1].bind('<Button-1>',   command = lambda: controller.show_frame(TemperatureFrame))
         self.num = 2
         self.canvas[2].bind('<Enter>', lambda event, arg=2: self.enter(event, arg))
         self.canvas[2].bind('<Leave>', lambda event, arg=2: self.leave(event, arg))
@@ -142,7 +168,6 @@ class Window:
         self.photo8 = PhotoImage(file="ok.png")
         self.canvas[9] = Canvas(self.window, bg="white", height=30, width=30, bd=2, highlightthickness=0,
                                 relief='ridge')
-        self.window.mainloop()
 
     def file(self):
         print("file")
@@ -163,6 +188,7 @@ class Window:
         print("ok")
         self.canvas[num]["bg"]="#bec2d6"
 
+
     def leave(self, event, num):
         #print(event.x)
         print("leave")
@@ -173,5 +199,27 @@ class Window:
         #self.c.grid(row=4, column=1)
         #print("youp")
         self.c["values"]=self.board.find_serials()
-win = Window()
+
+class TemperatureFrame:
+    def __init__(self, parent, controler):
+        tk.Frame.__init__(self,parent)
+        # manage menu
+        menubar = Menu(self.window)
+        filemenu = Menu(menubar, tearoff=0)
+        setting = Menu(menubar, tearoff=0)
+        filemenu.add_command(label="import config", command=self.file)
+        filemenu.add_command(label="export settings", command=self.file)
+        filemenu.add_command(label="import", command=self.file)
+
+        setting.add_command(label="com config", command=self.file)
+        setting.add_command(label="logs", command=self.file)
+
+        menubar.add_cascade(label="File", menu=filemenu)
+        menubar.add_cascade(label="Settings", menu=setting)
+        self.window["menu"] = menubar
+
+
+
+app = SeaofBTCapp()
+app.mainloop()
 
