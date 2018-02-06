@@ -7,6 +7,7 @@ from application.data import *
 from application.data_change import *
 from server.led import Led
 import time
+from application.serial_receiver import SerialReceiver
 
 class Client:
     def __init__(self, port):
@@ -14,12 +15,10 @@ class Client:
         self.listener.start()
         self.writer = None
         self.server_name = ""
-        self.board = DeviceManager()
-        self.led = Led(7)
         self.led.led_off()
         self.state = 0
-        self.led_state = Led(11)
-        self.led_state.led_off()
+        self.serial = SerialReceiver(self.on_control,9600,"/dev/ttyACM0")
+
     def on_message(self, message):
         # Start to interpret as a generic message
         primal_message = CroomMessage("","")
@@ -40,12 +39,14 @@ class Client:
             if(secondal_message.deviceName == "led"):
                 # case led on
                 if secondal_message.value == "01":
-                    self.led.led_on()      
-                    print("again")
-
+                    self.serial.send("LED")
                 # case led off
                 if secondal_message.value =="02":
-                    self.led.led_off()
+                    self.serial.send("LEO")
+
+    def on_control(self, message):
+        print(message)
+        pass
 
 cli = Client(5001)
 
