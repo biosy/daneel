@@ -6,6 +6,7 @@ class Led:
     def __init__(self, pin):
         self.pin = pin
         GP.setmode(GP.BOARD)
+        GP.setwarnings(False)
         GP.setup(self.pin, GP.OUT)
         self.type = "output"
 

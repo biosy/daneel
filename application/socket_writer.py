@@ -14,7 +14,7 @@ class SocketWriter:
         print("connected")
 
     def send(self, message):
-        self.socket.sendall(message.encapsulate().encode("utf-8"))
+        self.socket.send((message.encapsulate()+"\r").encode("utf-8"))
         print(message.encapsulate().encode("utf-8"))
 
 
